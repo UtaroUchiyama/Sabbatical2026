@@ -579,6 +579,23 @@ body {
   margin-bottom: 0.75rem;
 }
 
+#lang-btn {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 200;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  color: rgba(245,240,232,0.85);
+  background: rgba(26,22,18,0.75);
+  border: 1px solid rgba(168,137,74,0.5);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 0.2s;
+}
 #lang-btn:hover { color: var(--gold); border-color: var(--gold); }
 .cover-body {
   display: flex;
@@ -611,6 +628,8 @@ body {
 </style>
 </head>
 <body>
+
+<button id="lang-btn" onclick="toggleLang()">EN</button>
 
 <!-- ============ COVER ============ -->
 <section class="cover">
@@ -653,12 +672,7 @@ body {
     <a class="tagbtn" href="#mountains" data-ja="名山" data-en="Peaks" data-ja="名山" data-en="Peaks">名山</a>
     <a class="tagbtn" href="#food" data-ja="名物" data-en="Food">名物</a>
     <a class="tagbtn" href="#essay" data-ja="雑感" data-en="Notes">雑感</a>
-    <button id="lang-btn" onclick="toggleLang()" style="
-    font-family:'Bebas Neue',sans-serif;letter-spacing:0.15em;font-size:12px;
-    color:rgba(245,240,232,0.5);background:none;border:1px solid rgba(245,240,232,0.2);
-    padding:0.3rem 0.7rem;cursor:pointer;margin-left:0.5rem;transition:all 0.2s;white-space:nowrap;
-    ">EN</button>
-</div>
+  </div>
 </nav>
 
 <!-- ============ METRICS + MAP ============ -->
