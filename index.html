@@ -580,6 +580,34 @@ body {
 }
 
 #lang-btn:hover { color: var(--gold); border-color: var(--gold); }
+.cover-body {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: left;
+}
+.cover-photo {
+  flex: 0 0 260px;
+  width: 260px;
+  height: 340px;
+  object-fit: cover;
+  border-radius: 3px;
+  opacity: 0.85;
+}
+.cover-text {
+  flex: 1;
+}
+.cover-text .cover-desc {
+  text-align: left;
+  max-width: none;
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .cover-body { flex-direction: column; align-items: center; }
+  .cover-photo { width: 100%; height: 220px; flex: none; }
+}
 </style>
 </head>
 <body>
@@ -599,13 +627,16 @@ body {
     <p class="cover-subtitle" data-ja="四国・九州・屋久島・中国地方" data-en="Shikoku · Kyushu · Yakushima · Chugoku">四国・九州・屋久島・中国地方</p>
     <p class="cover-eyebrow">MAY 8 – MAY 28</p>
     <div class="cover-rule"></div>
-    <p class="cover-desc"><span data-ja="早いもので社会人になり四半世紀。初めて「サバティカル休暇」なるものを頂きました。マイカーで四国→九州&屋久島→中国地方と巡り、最後は実家の松本へ立ち寄る、（結果的に）3週間4,000kmの一人旅。" data-en="Twenty-five years into my career, I finally took a sabbatical. Drove solo through Shikoku, Kyushu & Yakushima, and the Chugoku region — with a stop at my hometown of Matsumoto — a three-week, 4,000 km journey.">早いもので社会人になり四半世紀。初めて「サバティカル休暇」なるものを頂きました。マイカーで四国→九州&屋久島→中国地方と巡り、最後は実家の松本へ立ち寄る、（結果的に）3週間4,000kmの一人旅。</span></p>
-    <div class="cover-desc" style="margin-top:1.5rem">
-      <p><span data-ja="基本的には朝チェックアウトしたら目的の山に直行し、下山したら天気予報・体調・時計と相談し、目的地を決めTrivagoで宿（目標：5,000円以内！）を探し次の麓に移動するという、自分にとっては夢のような生活。西日本の日本百名山9座コンプリート！" data-en="The daily routine: check out, drive straight to the mountain, summit, then check weather, energy, and time to pick the next stop — finding lodging on Trivago (target: under ¥5,000!) at the next trailhead. Dream life. Bagged 9 Hyakumeizan peaks in western Japan!">基本的には朝チェックアウトしたら目的の山に直行し、下山したら天気予報・体調・時計と相談し、目的地を決めTrivagoで宿（目標：5,000円以内！）を探し次の麓に移動するという、自分にとっては夢のような生活。西日本の日本百名山9座コンプリート！</span></p>
-      <p style="margin-top:1rem"><span data-ja="晴天続きで、山の稜線、咲き誇る花、雲海、水平線や海に浮かぶしまなみ、夕陽、虹……言葉を失う美しい景色をこれでもかというほど味わいました。" data-en="Day after day of clear skies. Mountain ridgelines, blossoming flowers, seas of clouds, the Shimanami islands, sunsets, rainbows... Breathtaking scenery beyond words, again and again.">晴天続きで、山の稜線、咲き誇る花、雲海、水平線や海に浮かぶしまなみ、夕陽、虹……言葉を失う美しい景色をこれでもかというほど味わいました。</span></p>
-      <p style="margin-top:1rem"><span data-ja="ずっと沈黙の旅になるかと危惧していたけど、登山口やフェリー乗り場等至る所で一期一会的な出会いがあり、SNSやYAMAPまで交換したり、とある宿ではウェルカムドリンクを貰いに行ったら色んな国からの旅人が次々と集まり結局2時間くらい飲み続けるなんてことも。結局百人以上と会話したのでは。" data-en="I worried the trip would be a lonely one, but chance encounters happened everywhere — trailheads, ferry terminals, you name it. Swapped SNS and YAMAP contacts with fellow hikers. At one hostel, a welcome drink turned into a two-hour session as travelers from around the world kept joining in. I must have spoken to over a hundred people.">ずっと沈黙の旅になるかと危惧していたけど、登山口やフェリー乗り場等至る所で一期一会的な出会いがあり、SNSやYAMAPまで交換したり、とある宿ではウェルカムドリンクを貰いに行ったら色んな国からの旅人が次々と集まり結局2時間くらい飲み続けるなんてことも。結局百人以上と会話したのでは。</span></p>
-      <p style="margin-top:1rem"><span data-ja="屋久島も本当に素晴らしい場所だった。こちらはツアーに申し込んで大正解。良いガイドさんと仲間に恵まれ、学生に戻ったような、遠足のようなひとときでした。山奥にひっそり佇む縄文杉の貫禄は凄かった。" data-en="Yakushima was absolutely magnificent. Joining a guided tour was the right call — a wonderful guide and great companions, like being back on a school excursion. The ancient Jomon Cedar, quietly standing deep in the forest, was genuinely awe-inspiring.">屋久島も本当に素晴らしい場所だった。こちらはツアーに申し込んで大正解。良いガイドさんと仲間に恵まれ、学生に戻ったような、遠足のようなひとときでした。山奥にひっそり佇む縄文杉の貫禄は凄かった。</span></p>
-      <p style="margin-top:1rem"><span data-ja="素敵な休暇制度を設けてくれている会社、不在中にカバーしてくれた上司や同僚、快く送り出してくれた家族に心から感謝！" data-en="Heartfelt thanks to my company for this sabbatical policy, to my manager and colleagues who covered for me, and to my family for cheering me on.">素敵な休暇制度を設けてくれている会社、不在中にカバーしてくれた上司や同僚、快く送り出してくれた家族に心から感謝！</span></p>
+    <div class="cover-body">
+      <img class="cover-photo" src="images/yakushima/jomon/IMG_1283.jpeg" alt="ウィルソン株">
+      <div class="cover-text">
+        <p class="cover-desc"><span data-ja="早いもので社会人になり四半世紀。初めて「サバティカル休暇」なるものを頂きました。マイカーで四国→九州&屋久島→中国地方と巡り、最後は実家の松本へ立ち寄る、（結果的に）3週間4,000kmの一人旅。" data-en="Twenty-five years into my career, I finally took a sabbatical. Drove solo through Shikoku, Kyushu & Yakushima, and the Chugoku region — with a stop at my hometown of Matsumoto — a three-week, 4,000 km journey.">早いもので社会人になり四半世紀。初めて「サバティカル休暇」なるものを頂きました。マイカーで四国→九州&屋久島→中国地方と巡り、最後は実家の松本へ立ち寄る、（結果的に）3週間4,000kmの一人旅。</span></p>
+        <p class="cover-desc" style="margin-top:1rem"><span data-ja="基本的には朝チェックアウトしたら目的の山に直行し、下山したら天気予報・体調・時計と相談し、目的地を決めTrivagoで宿（目標：5,000円以内！）を探し次の麓に移動するという、自分にとっては夢のような生活。西日本の日本百名山9座コンプリート！" data-en="The daily routine: check out, drive straight to the mountain, summit, then check weather, energy, and time to pick the next stop — finding lodging on Trivago (target: under ¥5,000!) at the next trailhead. Dream life. Bagged 9 Hyakumeizan peaks in western Japan!">基本的には朝チェックアウトしたら目的の山に直行し、下山したら天気予報・体調・時計と相談し、目的地を決めTrivagoで宿（目標：5,000円以内！）を探し次の麓に移動するという、自分にとっては夢のような生活。西日本の日本百名山9座コンプリート！</span></p>
+        <p class="cover-desc" style="margin-top:1rem"><span data-ja="晴天続きで、山の稜線、咲き誇る花、雲海、水平線や海に浮かぶしまなみ、夕陽、虹……言葉を失う美しい景色をこれでもかというほど味わいました。" data-en="Day after day of clear skies. Mountain ridgelines, blossoming flowers, seas of clouds, the Shimanami islands, sunsets, rainbows... Breathtaking scenery beyond words, again and again.">晴天続きで、山の稜線、咲き誇る花、雲海、水平線や海に浮かぶしまなみ、夕陽、虹……言葉を失う美しい景色をこれでもかというほど味わいました。</span></p>
+        <p class="cover-desc" style="margin-top:1rem"><span data-ja="ずっと沈黙の旅になるかと危惧していたけど、登山口やフェリー乗り場等至る所で一期一会的な出会いがあり、SNSやYAMAPまで交換したり、とある宿ではウェルカムドリンクを貰いに行ったら色んな国からの旅人が次々と集まり結局2時間くらい飲み続けるなんてことも。結局百人以上と会話したのでは。" data-en="I worried the trip would be a lonely one, but chance encounters happened everywhere — trailheads, ferry terminals, you name it. Swapped SNS and YAMAP contacts with fellow hikers. At one hostel, a welcome drink turned into a two-hour session as travelers from around the world kept joining in. I must have spoken to over a hundred people.">ずっと沈黙の旅になるかと危惧していたけど、登山口やフェリー乗り場等至る所で一期一会的な出会いがあり、SNSやYAMAPまで交換したり、とある宿ではウェルカムドリンクを貰いに行ったら色んな国からの旅人が次々と集まり結局2時間くらい飲み続けるなんてことも。結局百人以上と会話したのでは。</span></p>
+        <p class="cover-desc" style="margin-top:1rem"><span data-ja="屋久島も本当に素晴らしい場所だった。こちらはツアーに申し込んで大正解。良いガイドさんと仲間に恵まれ、学生に戻ったような、遠足のようなひとときでした。山奥にひっそり佇む縄文杉の貫禄は凄かった。" data-en="Yakushima was absolutely magnificent. Joining a guided tour was the right call — a wonderful guide and great companions, like being back on a school excursion. The ancient Jomon Cedar, quietly standing deep in the forest, was genuinely awe-inspiring.">屋久島も本当に素晴らしい場所だった。こちらはツアーに申し込んで大正解。良いガイドさんと仲間に恵まれ、学生に戻ったような、遠足のようなひとときでした。山奥にひっそり佇む縄文杉の貫禄は凄かった。</span></p>
+        <p class="cover-desc" style="margin-top:1rem"><span data-ja="素敵な休暇制度を設けてくれている会社、不在中にカバーしてくれた上司や同僚、快く送り出してくれた家族に心から感謝！" data-en="Heartfelt thanks to my company for this sabbatical policy, to my manager and colleagues who covered for me, and to my family for cheering me on.">素敵な休暇制度を設けてくれている会社、不在中にカバーしてくれた上司や同僚、快く送り出してくれた家族に心から感謝！</span></p>
+      </div>
     </div>
   </div>
   <p class="scroll-hint">↓ SCROLL</p>
