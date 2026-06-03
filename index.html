@@ -1,82 +1,1377 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>サバティカルの記録</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yutaro's Sabbatical 2026 — 西日本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique+Soft&family=Noto+Sans+JP:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:    #1a1612;
+  --paper:  #f5f0e8;
+  --accent: #c84b2f;
+  --gold:   #a8894a;
+  --muted:  #6b6256;
+  --light:  #ede8df;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ---- COVER ---- */
+.cover {
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--ink);
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 60%, #2a1f14 0%, #0d0a07 70%);
+}
+.cover-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  opacity: 0.4;
+}
+.cover-grid-cell {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #2a2420;
+}
+.cover-grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.6) brightness(0.7);
+}
+.cover-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+}
+.cover-eyebrow {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.cover-title {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: clamp(3rem, 10vw, 7rem);
+  color: #f5f0e8;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.cover-subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+.cover-rule {
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+  margin: 0 auto 2rem;
+}
+.cover-desc {
+  color: rgba(245,240,232,0.65);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  max-width: 640px;
+  line-height: 2;
+  text-align: center;
+  margin: 0 auto;
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(245,240,232,0.4);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  animation: bounce 2s infinite;
+  z-index: 2;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ---- NAV ---- */
+.tagbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--ink);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tagbar::-webkit-scrollbar { display: none; }
+.tagbar-inner {
+  display: flex;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.tagbtn {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  color: rgba(245,240,232,0.5);
+  background: none;
+  border: none;
+  padding: 1rem 0;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  display: inline-block;
+  flex: 1;
+  text-align: center;
+}
+.tagbtn:hover, .tagbtn.active {
+  color: var(--gold);
+  border-bottom-color: var(--accent);
+}
+
+/* ---- SECTION HEADER ---- */
+.sec-header {
+  text-align: center;
+  padding: 4rem 1.5rem 2rem;
+}
+.sec-eyebrow {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.sec-title {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.sec-title-light { color: #f5f0e8; }
+.sec-rule {
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+  margin: 1rem auto 0;
+}
+
+/* ---- METRICS ---- */
+.metrics-section {
+  background: var(--ink);
+  padding: 5rem 1.5rem 4rem;
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  max-width: 800px;
+  margin: 3rem auto 4rem;
+  border: 1px solid rgba(168,137,74,0.2);
+}
+@media (max-width: 600px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.metric-item {
+  padding: 2rem 1rem;
+  text-align: center;
+  border-right: 1px solid rgba(168,137,74,0.2);
+}
+.metric-item:last-child { border-right: none; }
+@media (max-width: 600px) {
+  .metric-item:nth-child(2) { border-right: none; }
+  .metric-item:nth-child(3) { border-right: 1px solid rgba(168,137,74,0.2); }
+  .metric-item { border-bottom: 1px solid rgba(168,137,74,0.2); }
+}
+.metric-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+.metric-unit {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  color: var(--gold);
+  opacity: 0.6;
+}
+.metric-label {
+  font-size: 11px;
+  color: rgba(245,240,232,0.4);
+  letter-spacing: 0.1em;
+  margin-top: 0.5rem;
+}
+
+#map {
+  width: 100%;
+  max-width: 860px;
+  height: 440px;
+  margin: 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(168,137,74,0.3);
+}
+
+/* ---- PHOTO ENTRIES ---- */
+.entries {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 2rem;
+}
+.entry {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.entry.visible { opacity: 1; transform: translateY(0); }
+.entry:nth-child(even) .entry-img-wrap { order: 2; }
+.entry:nth-child(even) .entry-text      { order: 1; }
+
+@media (max-width: 640px) {
+  .entry { grid-template-columns: 1fr; }
+  .entry:nth-child(even) .entry-img-wrap { order: 1; }
+  .entry:nth-child(even) .entry-text      { order: 2; }
+}
+
+.entry-img-wrap {
+  position: relative;
+  overflow: hidden;
+  background: #2a2420;
+}
+.entry-img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.35s ease, transform 0.6s ease;
+}
+.entry-img-wrap:not([data-photos]) .entry-img:hover,
+.entry-img-wrap:not([data-photos]):hover .entry-img { transform: scale(1.04); }
+
+/* slider arrows */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(10,8,5,0.55);
+  border: none;
+  color: rgba(245,240,232,0.85);
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  line-height: 1;
+}
+.slider-btn:hover { background: rgba(200,75,47,0.75); }
+.slider-btn.prev { left: 0.6rem; }
+.slider-btn.next { right: 0.6rem; }
+
+/* dots */
+.slider-dots {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 10;
+}
+.slider-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(245,240,232,0.4);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.slider-dot.active { background: var(--gold); }
+
+.entry-placeholder {
+  width: 100%;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  opacity: 0.15;
+  color: var(--gold);
+}
+
+.entry-day-stamp {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.1em;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+.entry-date-stamp {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(10,8,5,0.6);
+  color: rgba(245,240,232,0.6);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  padding: 4px 10px;
+}
+.entry-tag-stamp { display: none; }
+
+.entry-text {
+  background: var(--light);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem;
+  border-left: 4px solid var(--accent);
+}
+.entry:nth-child(even) .entry-text {
+  border-left: none;
+  border-right: 4px solid var(--accent);
+}
+.entry-num { display: none; }
+.entry-location {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.entry-title {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.7rem;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.entry-caption {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--muted);
+  padding-left: 1rem;
+  border-left: 2px solid rgba(168,137,74,0.4);
+}
+
+/* ---- SECTION DIVIDER ---- */
+.section-block {
+  border-top: 1px solid rgba(26,22,18,0.08);
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+/* ---- MOUNTAIN GRID ---- */
+.mountain-section {
+  background: var(--ink);
+  padding: 4rem 1.5rem 5rem;
+}
+.mountain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1px;
+  max-width: 900px;
+  margin: 2.5rem auto 0;
+  border: 1px solid rgba(168,137,74,0.15);
+}
+.mountain-card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-right: 1px solid rgba(168,137,74,0.15);
+  border-bottom: 1px solid rgba(168,137,74,0.15);
+  display: flex;
+  flex-direction: column;
+  background: #1a1612;
+  transition: background 0.2s;
+}
+.mountain-card:hover { background: #221e18; }
+.mountain-card-name {
+  padding: 0.9rem 1rem 0.6rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(168,137,74,0.1);
+}
+.mountain-card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.4s, transform 0.5s;
+  opacity: 0.85;
+}
+.mountain-card:hover .mountain-card-img {
+  opacity: 1;
+  transform: scale(1.03);
+}
+.mountain-card-body {
+  padding: 0.8rem 1rem;
+  text-align: center;
+  flex: 1;
+}
+.mountain-peak {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.9rem;
+  color: var(--gold);
+  display: block;
+  letter-spacing: 0.05em;
+}
+.mountain-hyaku {
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+.mountain-name {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.1rem;
+  color: #f5f0e8;
+  margin: 0.2rem 0;
+}
+.mountain-area {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(245,240,232,0.3);
+  text-transform: uppercase;
+}
+.mountain-day {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-top: 0.4rem;
+}
+
+/* ---- FOOD GRID ---- */
+.food-section {
+  padding: 4rem 1.5rem 5rem;
+  background: var(--paper);
+}
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 2.5rem auto 0;
+}
+.food-card {
+  background: var(--light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.food-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  background: #d5cfc4;
+}
+.food-placeholder {
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  background: #e5dfd3;
+}
+.food-body {
+  padding: 1rem 1.2rem 1.2rem;
+  border-left: 3px solid var(--accent);
+}
+.food-name {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+.food-area {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ---- 雑感 ---- */
+.essay-section {
+  background: var(--ink);
+  padding: 5rem 1.5rem 6rem;
+}
+.essay-body {
+  max-width: 660px;
+  margin: 3rem auto 0;
+  font-size: 15px;
+  line-height: 2.3;
+  color: rgba(245,240,232,0.7);
+  letter-spacing: 0.03em;
+}
+.essay-body p { margin-bottom: 2rem; }
+.essay-lead {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.1rem;
+  color: rgba(245,240,232,0.85);
+  line-height: 2.2;
+  border-left: 2px solid var(--gold);
+  padding-left: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+/* ---- FOOTER ---- */
+.footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(168,137,74,0.2);
+  color: rgba(245,240,232,0.35);
+  text-align: center;
+  padding: 3rem 1rem;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.footer-title {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+#lang-btn:hover { color: var(--gold); border-color: var(--gold); }
+</style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <h1 class="site-title">サバティカルの記録</h1>
-      <p class="site-subtitle">2026年 — 西日本をめぐる旅</p>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="cover-grid">
+    <div class="cover-grid-cell"><img src="images/cover/c1.jpg" alt="" onerror="this.style.display='none'"></div>
+    <div class="cover-grid-cell"><img src="images/cover/c2.jpg" alt="" onerror="this.style.display='none'"></div>
+    <div class="cover-grid-cell"><img src="images/cover/c3.jpg" alt="" onerror="this.style.display='none'"></div>
+    <div class="cover-grid-cell"><img src="images/cover/c4.jpg" alt="" onerror="this.style.display='none'"></div>
+    <div class="cover-grid-cell"><img src="images/cover/c5.jpg" alt="" onerror="this.style.display='none'"></div>
+    <div class="cover-grid-cell"><img src="images/cover/c6.jpg" alt="" onerror="this.style.display='none'"></div>
+  </div>
+  <div class="cover-content">
+    <h1 class="cover-title">Yutaro's Sabbatical 2026</h1>
+    <p class="cover-subtitle" data-ja="四国・九州・屋久島・中国地方" data-en="Shikoku · Kyushu · Yakushima · Chugoku">四国・九州・屋久島・中国地方</p>
+    <p class="cover-eyebrow">MAY 8 – MAY 28</p>
+    <div class="cover-rule"></div>
+    <p class="cover-desc"><span data-ja="早いもので社会人になり四半世紀。初めて「サバティカル休暇」なるものを頂きました。マイカーで四国→九州&屋久島→中国地方と巡り、最後は実家の松本へ立ち寄る、（結果的に）3週間4,000kmの一人旅。" data-en="Twenty-five years into my career, I finally took a sabbatical. Drove solo through Shikoku, Kyushu & Yakushima, and the Chugoku region — with a stop at my hometown of Matsumoto — a three-week, 4,000 km journey.">早いもので社会人になり四半世紀。初めて「サバティカル休暇」なるものを頂きました。マイカーで四国→九州&屋久島→中国地方と巡り、最後は実家の松本へ立ち寄る、（結果的に）3週間4,000kmの一人旅。</span></p>
+    <div class="cover-desc" style="margin-top:1.5rem">
+      <p><span data-ja="基本的には朝チェックアウトしたら目的の山に直行し、下山したら天気予報・体調・時計と相談し、目的地を決めTrivagoで宿（目標：5,000円以内！）を探し次の麓に移動するという、自分にとっては夢のような生活。西日本の日本百名山9座コンプリート！" data-en="The daily routine: check out, drive straight to the mountain, summit, then check weather, energy, and time to pick the next stop — finding lodging on Trivago (target: under ¥5,000!) at the next trailhead. Dream life. Bagged 9 Hyakumeizan peaks in western Japan!">基本的には朝チェックアウトしたら目的の山に直行し、下山したら天気予報・体調・時計と相談し、目的地を決めTrivagoで宿（目標：5,000円以内！）を探し次の麓に移動するという、自分にとっては夢のような生活。西日本の日本百名山9座コンプリート！</span></p>
+      <p style="margin-top:1rem"><span data-ja="晴天続きで、山の稜線、咲き誇る花、雲海、水平線や海に浮かぶしまなみ、夕陽、虹……言葉を失う美しい景色をこれでもかというほど味わいました。" data-en="Day after day of clear skies. Mountain ridgelines, blossoming flowers, seas of clouds, the Shimanami islands, sunsets, rainbows... Breathtaking scenery beyond words, again and again.">晴天続きで、山の稜線、咲き誇る花、雲海、水平線や海に浮かぶしまなみ、夕陽、虹……言葉を失う美しい景色をこれでもかというほど味わいました。</span></p>
+      <p style="margin-top:1rem"><span data-ja="ずっと沈黙の旅になるかと危惧していたけど、登山口やフェリー乗り場等至る所で一期一会的な出会いがあり、SNSやYAMAPまで交換したり、とある宿ではウェルカムドリンクを貰いに行ったら色んな国からの旅人が次々と集まり結局2時間くらい飲み続けるなんてことも。結局百人以上と会話したのでは。" data-en="I worried the trip would be a lonely one, but chance encounters happened everywhere — trailheads, ferry terminals, you name it. Swapped SNS and YAMAP contacts with fellow hikers. At one hostel, a welcome drink turned into a two-hour session as travelers from around the world kept joining in. I must have spoken to over a hundred people.">ずっと沈黙の旅になるかと危惧していたけど、登山口やフェリー乗り場等至る所で一期一会的な出会いがあり、SNSやYAMAPまで交換したり、とある宿ではウェルカムドリンクを貰いに行ったら色んな国からの旅人が次々と集まり結局2時間くらい飲み続けるなんてことも。結局百人以上と会話したのでは。</span></p>
+      <p style="margin-top:1rem"><span data-ja="屋久島も本当に素晴らしい場所だった。こちらはツアーに申し込んで大正解。良いガイドさんと仲間に恵まれ、学生に戻ったような、遠足のようなひとときでした。山奥にひっそり佇む縄文杉の貫禄は凄かった。" data-en="Yakushima was absolutely magnificent. Joining a guided tour was the right call — a wonderful guide and great companions, like being back on a school excursion. The ancient Jomon Cedar, quietly standing deep in the forest, was genuinely awe-inspiring.">屋久島も本当に素晴らしい場所だった。こちらはツアーに申し込んで大正解。良いガイドさんと仲間に恵まれ、学生に戻ったような、遠足のようなひとときでした。山奥にひっそり佇む縄文杉の貫禄は凄かった。</span></p>
+      <p style="margin-top:1rem"><span data-ja="素敵な休暇制度を設けてくれている会社、不在中にカバーしてくれた上司や同僚、快く送り出してくれた家族に心から感謝！" data-en="Heartfelt thanks to my company for this sabbatical policy, to my manager and colleagues who covered for me, and to my family for cheering me on.">素敵な休暇制度を設けてくれている会社、不在中にカバーしてくれた上司や同僚、快く送り出してくれた家族に心から感謝！</span></p>
     </div>
-  </header>
+  </div>
+  <p class="scroll-hint">↓ SCROLL</p>
+</section>
 
-  <main>
-    <section class="intro">
-      <p>サバティカル休暇を使い、四国・九州・屋久島・中国地方を旅した記録です。</p>
-    </section>
+<!-- ============ STICKY NAV ============ -->
+<nav class="tagbar" id="tagbar">
+  <div class="tagbar-inner">
+    <a class="tagbtn active" href="#metrics" data-ja="軌跡" data-en="Journey">軌跡</a>
+    <a class="tagbtn" href="#shikoku" data-ja="四国" data-en="Shikoku">四国</a>
+    <a class="tagbtn" href="#kyushu" data-ja="九州" data-en="Kyushu">九州</a>
+    <a class="tagbtn" href="#yakushima" data-ja="屋久島" data-en="Yakushima">屋久島</a>
+    <a class="tagbtn" href="#chugoku" data-ja="中国地方" data-en="Chugoku">中国地方</a>
+    <a class="tagbtn" href="#mountains" data-ja="名山" data-en="Peaks" data-ja="名山" data-en="Peaks">名山</a>
+    <a class="tagbtn" href="#food" data-ja="名物" data-en="Food">名物</a>
+    <a class="tagbtn" href="#essay" data-ja="雑感" data-en="Notes">雑感</a>
+    <button id="lang-btn" onclick="toggleLang()" style="
+    font-family:'Bebas Neue',sans-serif;letter-spacing:0.15em;font-size:12px;
+    color:rgba(245,240,232,0.5);background:none;border:1px solid rgba(245,240,232,0.2);
+    padding:0.3rem 0.7rem;cursor:pointer;margin-left:0.5rem;transition:all 0.2s;white-space:nowrap;
+    ">EN</button>
+</div>
+</nav>
 
-    <section class="destinations">
-      <h2 class="section-title">訪問地</h2>
-      <div class="card-grid">
+<!-- ============ METRICS + MAP ============ -->
+<section class="metrics-section" id="metrics">
+  <div class="sec-header">
 
-        <a href="shikoku.html" class="card">
-          <div class="card-image" style="background-image: url('images/shikoku/cover.jpg')">
-            <div class="card-overlay">
-              <span class="card-region">四国</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3>四国</h3>
-            <p>お遍路の道、四万十川、道後温泉…</p>
-          </div>
-        </a>
+    <h2 class="sec-title sec-title-light">Journey at a Glance</h2>
+    <div class="sec-rule"></div>
+  </div>
 
-        <a href="kyushu.html" class="card">
-          <div class="card-image" style="background-image: url('images/kyushu/cover.jpg')">
-            <div class="card-overlay">
-              <span class="card-region">九州</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3>九州</h3>
-            <p>阿蘇のカルデラ、長崎の歴史、温泉地…</p>
-          </div>
-        </a>
+  <div class="metrics-grid">
+    <div class="metric-item">
+      <span class="metric-num">21</span>
+      <span class="metric-unit" data-ja="日間" data-en="Days">日間</span>
+      <p class="metric-label">TOTAL DAYS</p>
+    </div>
+    <div class="metric-item">
+      <span class="metric-num">4,000</span>
+      <span class="metric-unit">km</span>
+      <p class="metric-label">DRIVING</p>
+    </div>
+    <div class="metric-item">
+      <span class="metric-num">10</span>
+      <span class="metric-unit" data-ja="座" data-en="Peaks">座</span>
+      <p class="metric-label">SUMMITS</p>
+    </div>
+    <div class="metric-item">
+      <span class="metric-num">14</span>
+      <span class="metric-unit" data-ja="県" data-en="Prefs">県</span>
+      <p class="metric-label">PREFECTURES</p>
+    </div>
+  </div>
 
-        <a href="yakushima.html" class="card">
-          <div class="card-image" style="background-image: url('images/yakushima/cover.jpg')">
-            <div class="card-overlay">
-              <span class="card-region">屋久島</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3>屋久島</h3>
-            <p>縄文杉、苔むす原生林、山と海の島…</p>
-          </div>
-        </a>
+  <div id="map"></div>
+</section>
 
-        <a href="chugoku.html" class="card">
-          <div class="card-image" style="background-image: url('images/chugoku/cover.jpg')">
-            <div class="card-overlay">
-              <span class="card-region">中国地方</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <h3>中国地方</h3>
-            <p>出雲大社、宮島、鳥取砂丘…</p>
-          </div>
-        </a>
+<!-- ============ 四国 ============ -->
+<section id="shikoku">
+  <div class="sec-header">
+    <p class="sec-eyebrow">SHIKOKU · DAY 1–3</p>
+    <h2 class="sec-title" data-ja="四国" data-en="Shikoku">四国</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="entries">
 
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/shikoku/awaji">
+        <div class="entry-placeholder">🌊</div>
+        <span class="entry-day-stamp">Day 1</span>
+        <span class="entry-date-stamp">May 8</span>
+        <span class="entry-tag-stamp">島</span>
       </div>
-    </section>
-  </main>
+      <div class="entry-text">
+        <div class="entry-num">01</div>
+        <p class="entry-location" data-ja="東京 → 四国 → 九州" data-en="Tokyo → Shikoku → Kyushu">東京 → 四国 → 九州</p>
+        <h2 class="entry-title" data-ja="車窓からの景色" data-en="Roadside Views">車窓からの景色</h2>
+        <p class="entry-caption"><span data-ja="ありったけの登山道具と3-4週間分の荷物を無造作に詰め込み出発。初日はどこまで行けるかな… 結果的に明るいうちに明石海峡 - 鳴門海峡を渡り、四国へ上陸。" data-en="Packed all my hiking gear and a month of supplies and hit the road. Wasn't sure how far I'd get on day one — ended up crossing the Akashi Kaikyo and Naruto Strait before dark, landing on Shikoku.">ありったけの登山道具と3-4週間分の荷物を無造作に詰め込み出発。初日はどこまで行けるかな…
+結果的に明るいうちに明石海峡 - 鳴門海峡を渡り、四国へ上陸。</span></p>
+      </div>
+    </article>
 
-  <footer class="site-footer">
-    <p>© 2026 サバティカルの記録</p>
-  </footer>
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/shikoku/udon">
+        <div class="entry-placeholder">🍜</div>
+        <span class="entry-day-stamp">Day 2</span>
+        <span class="entry-date-stamp">May 9</span>
+        <span class="entry-tag-stamp">食</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">02</div>
+        <p class="entry-location" data-ja="香川" data-en="Kagawa">香川</p>
+        <h2 class="entry-title" data-ja="朝うどん" data-en="Morning Udon">朝うどん</h2>
+        <p class="entry-caption"><span data-ja="かねてからトライしたかった朝うどん。ローカルの常連さんしかいない。セルフでおでんを頂きながら、朝うどんを待つ。" data-en="A long-time dream — Kagawa's famous breakfast udon. Only regulars in sight. Oden in hand, waiting for freshly made noodles.">かねてからトライしたかった朝うどん。ローカルの常連さんしかいない。セルフでおでんを頂きながら、朝うどんを待つ。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/shikoku/marugame">
+        <div class="entry-placeholder">🏯</div>
+        <span class="entry-day-stamp">Day 2</span>
+        <span class="entry-date-stamp">May 9</span>
+        <span class="entry-tag-stamp">歴史</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">03</div>
+        <p class="entry-location" data-ja="香川" data-en="Kagawa">香川</p>
+        <h2 class="entry-title" data-ja="丸亀城" data-en="Marugame Castle">丸亀城</h2>
+        <p class="entry-caption"><span data-ja="現存天守12城の一つ。60m以上石垣の上に立つコンパクトなお城" data-en="One of Japan's 12 surviving original castles. A compact keep perched atop stone walls rising over 60 meters.">現存天守12城の一つ。60m以上石垣の上に立つコンパクトなお城</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/shikoku/tsurugi">
+        <div class="entry-placeholder">⛰️</div>
+        <span class="entry-day-stamp">Day 2</span>
+        <span class="entry-date-stamp">May 9</span>
+        <span class="entry-tag-stamp">登山</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">04</div>
+        <p class="entry-location" data-ja="徳島" data-en="Tokushima">徳島</p>
+        <h2 class="entry-title" data-ja="剣山" data-en="Mt. Tsurugi">剣山</h2>
+        <p class="entry-caption"><span data-ja="四国の屋根とも呼ばれる剣山。四方八方に何重にも山波が広がる。空を見上げたら海底にいるかのような錯覚に。" data-en="Known as the &quot;Roof of Shikoku.&quot; Layered mountain ranges stretch in every direction. Looking up at the sky felt strangely like being beneath the sea.">四国の屋根とも呼ばれる剣山。四方八方に何重にも山波が広がる。空を見上げたら海底にいるかのような錯覚に。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/shikoku/ishizuchi">
+        <div class="entry-placeholder">⛓️</div>
+        <span class="entry-day-stamp">Day 3</span>
+        <span class="entry-date-stamp">May 10</span>
+        <span class="entry-tag-stamp">登山</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">05</div>
+        <p class="entry-location" data-ja="愛媛" data-en="Ehime">愛媛</p>
+        <h2 class="entry-title" data-ja="石鎚山" data-en="Mt. Ishizuchi">石鎚山</h2>
+        <p class="entry-caption"><span data-ja="ずっと憧れていた山。鎖場は何度か経験済だけど、ここまでの数と高低差と斜度は別格に感じた。技量のみならずスタミナとの戦い。白装束の方々の多さや独特の和楽器の演奏に、あぁここは四国なのだと。そして、登頂して初めてあの角度で見える天狗岳は本当に感動モノ。" data-en="A mountain I'd long dreamed of. Chain climbs aren't new to me, but nothing matched the sheer number, height, and steepness here — a test of skill and endurance. White-robed pilgrims and traditional instruments reminded me: this is Shikoku. And the first glimpse of Tengu-dake from the summit took my breath away.">ずっと憧れていた山。鎖場は何度か経験済だけど、ここまでの数と高低差と斜度は別格に感じた。技量のみならずスタミナとの戦い。白装束の方々の多さや独特の和楽器の演奏に、あぁここは四国なのだと。そして、登頂して初めてあの角度で見える天狗岳は本当に感動モノ。</span></p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ 九州 ============ -->
+<section id="kyushu" class="section-block">
+  <div class="sec-header">
+    <p class="sec-eyebrow">KYUSHU · DAY 4–11 &amp; 15–16</p>
+    <h2 class="sec-title" data-ja="九州" data-en="Kyushu">九州</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="entries">
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/kyushu/unkai">
+        <div class="entry-placeholder">☁️</div>
+        <span class="entry-day-stamp">Day 4</span>
+        <span class="entry-date-stamp">May 11</span>
+        <span class="entry-tag-stamp">絶景</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">04</div>
+        <p class="entry-location" data-ja="九州" data-en="Kyushu">九州</p>
+        <h2 class="entry-title" data-ja="車窓からの景色" data-en="Roadside Views">車窓からの景色</h2>
+        <p class="entry-caption"><span data-ja="雲海、山並み、温泉、海..." data-en="Sea of clouds, mountain ranges, hot springs, ocean...">雲海、山並み、温泉、海...</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/kyushu/kusasenri">
+        <div class="entry-placeholder">🌋</div>
+        <span class="entry-day-stamp">Day 5</span>
+        <span class="entry-date-stamp">May 12</span>
+        <span class="entry-tag-stamp">絶景</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">05</div>
+        <p class="entry-location" data-ja="熊本 · 阿蘇" data-en="Kumamoto · Aso">熊本 · 阿蘇</p>
+        <h2 class="entry-title" data-ja="草千里ヶ浜" data-en="Kusasenri Meadow">草千里ヶ浜</h2>
+        <p class="entry-caption"><span data-ja="草原と火口湖が織りなす別世界" data-en="A surreal world of alpine meadows and volcanic crater lakes.">草原と火口湖が織りなす別世界</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/kyushu/nagasaki">
+        <div class="entry-placeholder">⛪</div>
+        <span class="entry-day-stamp">Day 6</span>
+        <span class="entry-date-stamp">May 13</span>
+        <span class="entry-tag-stamp">歴史</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">06</div>
+        <p class="entry-location" data-ja="長崎" data-en="Nagasaki">長崎</p>
+        <h2 class="entry-title"><span data-ja="浦上天守堂 & 平和記念公園" data-en="Urakami Cathedral & Peace Park">浦上天守堂 & 平和記念公園</span></h2>
+        <p class="entry-caption"><span data-ja="連日の登山の骨休み日。夜は宿でウェルカムドリンクを飲んでいたら、世界中からの旅人が次々集まり、気づけば2時間の飲み会に。" data-en="A rest day from climbing. That evening, a welcome drink at the hostel turned into a two-hour session as travelers from around the world kept joining in.">連日の登山の骨休み日。夜は宿でウェルカムドリンクを飲んでいたら、世界中からの旅人が次々集まり、気づけば2時間の飲み会に。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/kyushu/sakurajima">
+        <div class="entry-placeholder">🌋</div>
+        <span class="entry-day-stamp">Day 10</span>
+        <span class="entry-date-stamp">May 17</span>
+        <span class="entry-tag-stamp">自然</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">07</div>
+        <p class="entry-location" data-ja="鹿児島" data-en="Kagoshima">鹿児島</p>
+        <h2 class="entry-title"><span data-ja="桜島 & 鹿児島市内" data-en="Sakurajima & Kagoshima City">桜島 & 鹿児島市内</span></h2>
+        <p class="entry-caption"><span data-ja="旅に出て初めてハンドルを握らなかった一日。路面電車→フェリー→周遊バスで湯之平展望台へ。フェリーターミナルで火山灰をTシャツに浴びた瞬間、ここが活火山だと実感。" data-en="The first day of the trip without driving. Tram → ferry → tour bus to Yunohira Viewpoint. A dusting of volcanic ash on my shirt at the ferry terminal made it real — this is an active volcano.">旅に出て初めてハンドルを握らなかった一日。路面電車→フェリー→周遊バスで湯之平展望台へ。フェリーターミナルで火山灰をTシャツに浴びた瞬間、ここが活火山だと実感。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/kyushu/yoshinogari">
+        <div class="entry-placeholder">🏛️</div>
+        <span class="entry-day-stamp">Day 16</span>
+        <span class="entry-date-stamp">May 23</span>
+        <span class="entry-tag-stamp">歴史</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">08</div>
+        <p class="entry-location" data-ja="佐賀" data-en="Saga">佐賀</p>
+        <h2 class="entry-title" data-ja="吉野ヶ里遺跡" data-en="Yoshinogari Historical Park">吉野ヶ里遺跡</h2>
+        <p class="entry-caption"><span data-ja="弥生時代の大規模集落遺跡" data-en="A large-scale Yayoi period settlement.">弥生時代の大規模集落遺跡</span></p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ 屋久島 ============ -->
+<section id="yakushima" class="section-block">
+  <div class="sec-header">
+    <p class="sec-eyebrow">YAKUSHIMA · DAY 11–15</p>
+    <h2 class="sec-title" data-ja="屋久島" data-en="Yakushima">屋久島</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="entries">
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/yakushima/ferry">
+        <div class="entry-placeholder">⛴️</div>
+        <span class="entry-day-stamp">Day 11</span>
+        <span class="entry-date-stamp">May 18</span>
+        <span class="entry-tag-stamp">移動</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">10</div>
+        <p class="entry-location" data-ja="屋久島" data-en="Yakushima">屋久島</p>
+        <h2 class="entry-title" data-ja="屋久島フェリー" data-en="Ferry to Yakushima">屋久島フェリー</h2>
+        <p class="entry-caption"><span data-ja="屋久島フェリーで鹿児島を出航。船上から少しずつ大きくなる島のシルエット。" data-en="Set sail from Kagoshima on the Yakushima ferry. Watched the island's silhouette slowly grow on the horizon.">屋久島フェリーで鹿児島を出航。船上から少しずつ大きくなる島のシルエット。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/yakushima/yayoi images/yakushima/taiko">
+        <div class="entry-placeholder">🌲</div>
+        <span class="entry-day-stamp">Day 11 &amp; 15</span>
+        <span class="entry-date-stamp">May 18 / 22</span>
+        <span class="entry-tag-stamp">森</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">11</div>
+        <p class="entry-location" data-ja="屋久島" data-en="Yakushima">屋久島</p>
+        <h2 class="entry-title" data-ja="白谷雲水峡" data-en="Shiratani Unsuikyo">白谷雲水峡</h2>
+        <p class="entry-caption"><span data-ja="もののけ姫の舞台。苔むす原生林と花崗岩の岩、豊かな川の水、太鼓岩からの絶景。" data-en="The forest that inspired Princess Mononoke. Moss-covered ancient trees, granite boulders, rushing streams, and a panoramic view from Taiko Rock.">もののけ姫の舞台。苔むす原生林と花崗岩の岩、豊かな川の水、太鼓岩からの絶景。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/yakushima/miyanoura">
+        <div class="entry-placeholder">⛰️</div>
+        <span class="entry-day-stamp">Day 12</span>
+        <span class="entry-date-stamp">May 19</span>
+        <span class="entry-tag-stamp">登山</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">12</div>
+        <p class="entry-location" data-ja="屋久島" data-en="Yakushima">屋久島</p>
+        <h2 class="entry-title" data-ja="宮之浦岳" data-en="Mt. Miyanoura">宮之浦岳</h2>
+        <p class="entry-caption"><span data-ja="念願の九州最高峰。天気予報は雨10mm超だったのに、終始弱雨以下。雨に霞む屋久島らしい森と旬の花を満喫。ツアーのガイドさんとメンバーに恵まれた夢のような12時間の山行" data-en="My long-awaited highest peak in Kyushu. Heavy rain forecast — nothing worse than a light drizzle. Savored the mist-shrouded forest and seasonal wildflowers. A dream 12-hour trek with a wonderful guide and companions.">念願の九州最高峰。天気予報は雨10mm超だったのに、終始弱雨以下。雨に霞む屋久島らしい森と旬の花を満喫。ツアーのガイドさんとメンバーに恵まれた夢のような12時間の山行</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/yakushima/taki">
+        <div class="entry-placeholder">💧</div>
+        <span class="entry-day-stamp">Day 13</span>
+        <span class="entry-date-stamp">May 20</span>
+        <span class="entry-tag-stamp">自然</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">13</div>
+        <p class="entry-location" data-ja="屋久島" data-en="Yakushima">屋久島</p>
+        <h2 class="entry-title" data-ja="滝巡り" data-en="Waterfall Tour">滝巡り</h2>
+        <p class="entry-caption"><span data-ja="龍神の滝、千尋の滝、トローキの滝、大川の滝。中間ガジュマルにも立ち寄り、島内をぐるりとドライブ" data-en="Ryujin Falls, Senpiro Falls, Toroki Falls, Okawa Falls. Also stopped by the Nakama Banyan Tree and drove around the island.">龍神の滝、千尋の滝、トローキの滝、大川の滝。中間ガジュマルにも立ち寄り、島内をぐるりとドライブ</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/yakushima/jomon">
+        <div class="entry-placeholder">🌳</div>
+        <span class="entry-day-stamp">Day 14</span>
+        <span class="entry-date-stamp">May 21</span>
+        <span class="entry-tag-stamp">森</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">14</div>
+        <p class="entry-location" data-ja="屋久島" data-en="Yakushima">屋久島</p>
+        <h2 class="entry-title" data-ja="縄文杉ツアー" data-en="Jomon Cedar Trek">縄文杉ツアー</h2>
+        <p class="entry-caption"><span data-ja="前日の天気予報は雨15〜18mm。蓋を開けてみれば奇跡のように、登山口に戻るまで一度も雨に見舞われなかった。ウィルソン株、大王杉、夫婦杉、そして縄文杉。復路はガイドさんの計らいで川遊びまで——勢いよく滑ってほぼ全身ずぶ濡れに。学生時代に戻ったかのような一日" data-en="Forecast: 15–18mm of rain. Miraculous reality: not a single drop until we were back at the trailhead. Wilson Stump, Daio Cedar, Meoto Cedar, and the Jomon Cedar. On the way back, our guide led us to play in a river — soaked to the bone, sliding down like kids. Felt like being back in school.">前日の天気予報は雨15〜18mm。蓋を開けてみれば奇跡のように、登山口に戻るまで一度も雨に見舞われなかった。ウィルソン株、大王杉、夫婦杉、そして縄文杉。復路はガイドさんの計らいで川遊びまで——勢いよく滑ってほぼ全身ずぶ濡れに。学生時代に戻ったかのような一日</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/yakushima/yado">
+        <div class="entry-placeholder">🌙</div>
+        <span class="entry-day-stamp">Day 11–15</span>
+        <span class="entry-date-stamp">Yakushima</span>
+        <span class="entry-tag-stamp">宿</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">16</div>
+        <p class="entry-location" data-ja="屋久島" data-en="Yakushima">屋久島</p>
+        <h2 class="entry-title" data-ja="宿からの眺め" data-en="View from the Lodge">宿からの眺め</h2>
+        <p class="entry-caption"><span data-ja="5日間お世話になったホテル屋久島山荘。林芙美子の小説「浮雲」の舞台らしい" data-en="Five wonderful nights at Hotel Yakushima Sansou — reportedly the setting of Fumiko Hayashi's novel &quot;Ukigumo.&quot;">5日間お世話になったホテル屋久島山荘。林芙美子の小説「浮雲」の舞台らしい</span></p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ 中国地方 ============ -->
+<section id="chugoku" class="section-block">
+  <div class="sec-header">
+    <p class="sec-eyebrow">CHUGOKU · DAY 16–18</p>
+    <h2 class="sec-title" data-ja="中国地方" data-en="Chugoku">中国地方</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="entries">
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/chugoku/kanmon">
+        <div class="entry-placeholder">🌉</div>
+        <span class="entry-day-stamp">Day 16</span>
+        <span class="entry-date-stamp">May 23</span>
+        <span class="entry-tag-stamp">海峡</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">17</div>
+        <p class="entry-location" data-ja="福岡 / 山口" data-en="Fukuoka / Yamaguchi">福岡 / 山口</p>
+        <h2 class="entry-title"><span data-ja="関門海峡 (門司港 <> 下関)" data-en="Kanmon Strait (Mojiko ↔ Shimonoseki)">関門海峡 (門司港 <> 下関)</span></h2>
+        <p class="entry-caption"><span data-ja="関門海峡クローバーきっぷで、トロッコ列車→船→バス→人道トンネルで海峡往復" data-en="Used the Kanmon Strait Clover Pass: retro train → ferry → bus → undersea pedestrian tunnel, crossing the strait both ways.">関門海峡クローバーきっぷで、トロッコ列車→船→バス→人道トンネルで海峡往復</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/chugoku/miyajima">
+        <div class="entry-placeholder">⛩️</div>
+        <span class="entry-day-stamp">Day 17</span>
+        <span class="entry-date-stamp">May 24</span>
+        <span class="entry-tag-stamp">登山</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">18</div>
+        <p class="entry-location" data-ja="広島" data-en="Hiroshima">広島</p>
+        <h2 class="entry-title" data-ja="宮島" data-en="Miyajima">宮島</h2>
+        <p class="entry-caption"><span data-ja="江ノ島くらいの大きさかと思っていたら、フェリーがひっきりなしに就航する大きな島。弥山という535mの山まである。海抜0mから登るそれなりの登り応え。頂上から広島市街～瀬戸内海まで360度のパノラマ。" data-en="I expected something the size of Enoshima — it's actually a large island with constant ferry service and a 535m mountain, Mt. Misen. A solid climb from sea level. 360-degree panorama from the top: Hiroshima city to the Seto Inland Sea.">江ノ島くらいの大きさかと思っていたら、フェリーがひっきりなしに就航する大きな島。弥山という535mの山まである。海抜0mから登るそれなりの登り応え。頂上から広島市街～瀬戸内海まで360度のパノラマ。</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/chugoku/hiroshima">
+        <div class="entry-placeholder">🕊️</div>
+        <span class="entry-day-stamp">Day 17</span>
+        <span class="entry-date-stamp">May 24</span>
+        <span class="entry-tag-stamp">歴史</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">19</div>
+        <p class="entry-location" data-ja="広島" data-en="Hiroshima">広島</p>
+        <h2 class="entry-title"><span data-ja="原爆ドーム & 平和記念公園" data-en="A-Bomb Dome & Peace Memorial Park">原爆ドーム & 平和記念公園</span></h2>
+        <p class="entry-caption"><span data-ja="14万もの尊い命が失われ、生き残った方々も長期にわたり苦しめられた。涙無しには回れない。こんなことが二度とあってはならぬとの思いが募る。一方で焦土から美しい街並みへと復興を遂げた広島と長崎に、人間の逞しさと前を向く強さも感じる" data-en="Over 140,000 precious lives lost, survivors enduring suffering for years. Impossible to walk through without tears. A deep conviction that this must never happen again. Yet in the rebuilt beauty of Hiroshima and Nagasaki, I also see the resilience and forward-looking strength of humanity.">14万もの尊い命が失われ、生き残った方々も長期にわたり苦しめられた。涙無しには回れない。こんなことが二度とあってはならぬとの思いが募る。一方で焦土から美しい街並みへと復興を遂げた広島と長崎に、人間の逞しさと前を向く強さも感じる</span></p>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-img-wrap" data-entry="images/chugoku/tottori">
+        <div class="entry-placeholder">🏜️</div>
+        <span class="entry-day-stamp">Day 18</span>
+        <span class="entry-date-stamp">May 25</span>
+        <span class="entry-tag-stamp">自然</span>
+      </div>
+      <div class="entry-text">
+        <div class="entry-num">20</div>
+        <p class="entry-location" data-ja="鳥取" data-en="Tottori">鳥取</p>
+        <h2 class="entry-title" data-ja="鳥取砂丘" data-en="Tottori Sand Dunes">鳥取砂丘</h2>
+        <p class="entry-caption"><span data-ja="山続きの旅のラストを締めくくる、異質な風景。砂丘は24時間営業らしい" data-en="A surreal finale to a journey of mountains. Apparently open 24 hours.">山続きの旅のラストを締めくくる、異質な風景。砂丘は24時間営業らしい</span></p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ 山 ============ -->
+<section class="mountain-section" id="mountains">
+  <div class="sec-header">
+    <p class="sec-eyebrow">10 SUMMITS</p>
+    <h2 class="sec-title sec-title-light" data-ja="名山" data-en="Peaks" data-ja="名山" data-en="Peaks">名山</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="mountain-grid">
+    <a class="mountain-card" href="https://yamap.com/activities/48181570" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="剣山" data-en="Mt. Tsurugi">剣山</p></div>
+      <img class="mountain-card-img" src="images/mountains/tsurugi.jpg" alt="剣山" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,955m</span>
+        <p class="mountain-area">TOKUSHIMA</p>
+        <p class="mountain-day">Day 2 · May 9</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48245516" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="石鎚山" data-en="Mt. Ishizuchi">石鎚山</p></div>
+      <img class="mountain-card-img" src="images/shikoku/ishizuchi.jpg" alt="石鎚山" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,982m</span>
+        <p class="mountain-area">EHIME</p>
+        <p class="mountain-day">Day 3 · May 10</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48276006" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="九重山" data-en="Mt. Kuju">九重山</p></div>
+      <img class="mountain-card-img" src="images/mountains/kuju.jpg" alt="九重山" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,791m</span>
+        <p class="mountain-area">OITA</p>
+        <p class="mountain-day">Day 4 · May 11</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48287662" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="祖母山" data-en="Mt. Sobo">祖母山</p></div>
+      <img class="mountain-card-img" src="images/mountains/sobo.jpg" alt="祖母山" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,756m</span>
+        <p class="mountain-area">OITA / MIYAZAKI</p>
+        <p class="mountain-day">Day 5 · May 12</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48322111" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" style="color:var(--gold);opacity:0.7" data-ja="二百名山" data-en="Nihyakumeizan">二百名山</span><p class="mountain-name" data-ja="普賢岳" data-en="Mt. Fugen">普賢岳</p></div>
+      <img class="mountain-card-img" src="images/mountains/fugen.jpg" alt="普賢岳" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,359m</span>
+        <p class="mountain-area">NAGASAKI</p>
+        <p class="mountain-day">Day 7 · May 14</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48337812" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="韓国岳" data-en="Mt. Karakuni">韓国岳</p></div>
+      <img class="mountain-card-img" src="images/mountains/karakuni.jpg" alt="韓国岳" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,700m</span>
+        <p class="mountain-area">KAGOSHIMA</p>
+        <p class="mountain-day">Day 8 · May 15</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48373114" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="開聞岳" data-en="Mt. Kaimon">開聞岳</p></div>
+      <img class="mountain-card-img" src="images/mountains/kaimon.jpg" alt="開聞岳" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">924m</span>
+        <p class="mountain-area">KAGOSHIMA</p>
+        <p class="mountain-day">Day 9 · May 16</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48501337" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="宮之浦岳" data-en="Mt. Miyanoura">宮之浦岳</p></div>
+      <img class="mountain-card-img" src="images/mountains/miyanoura.jpg" alt="宮之浦岳" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,936m</span>
+        <p class="mountain-area">YAKUSHIMA</p>
+        <p class="mountain-day">Day 12 · May 19</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48592967" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" style="opacity:0.8" data-ja="中国百名山・日本百低山" data-en="Chugoku 100 · Japan 100 Low Peaks">中国百名山・日本百低山</span><p class="mountain-name" data-ja="宮島弥山" data-en="Mt. Misen">宮島弥山</p></div>
+      <img class="mountain-card-img" src="images/mountains/misen.jpg" alt="宮島弥山" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">535m</span>
+        <p class="mountain-area">HIROSHIMA</p>
+        <p class="mountain-day">Day 17 · May 24</p>
+      </div>
+    </a>
+    <a class="mountain-card" href="https://yamap.com/activities/48640200" target="_blank" rel="noopener">
+      <div class="mountain-card-name"><span class="mountain-hyaku" data-ja="百名山" data-en="Hyakumeizan">百名山</span><p class="mountain-name" data-ja="伯耆大山" data-en="Mt. Daisen">伯耆大山</p></div>
+      <img class="mountain-card-img" src="images/mountains/daisen.jpg" alt="伯耆大山" onerror="this.style.display='none'">
+      <div class="mountain-card-body">
+        <span class="mountain-peak">1,729m</span>
+        <p class="mountain-area">TOTTORI</p>
+        <p class="mountain-day">Day 18 · May 25</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 食べ物 ============ -->
+<section class="food-section" id="food">
+  <div class="sec-header">
+    <p class="sec-eyebrow">FOOD</p>
+    <h2 class="sec-title" data-ja="名物" data-en="Food">名物</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="food-grid">
+<div class="food-card">
+      <img class="food-img" src="images/food/IMG_0629.jpeg" alt="朝うどん" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="朝うどん" data-en="Morning Udon">朝うどん</p>
+        <p class="food-area" data-ja="丸亀 · Day 2" data-en="Marugame · Day 2">丸亀 · Day 2</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_0796.jpeg" alt="ローストビーフ丼" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="ローストビーフ丼" data-en="Roast Beef Rice Bowl">ローストビーフ丼</p>
+        <p class="food-area" data-ja="阿蘇 · Day 4" data-en="Aso · Day 4">阿蘇 · Day 4</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_0886.jpeg" alt="太平燕" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="太平燕" data-en="Taipien Noodles">太平燕</p>
+        <p class="food-area" data-ja="熊本 · Day 5" data-en="Kumamoto · Day 5">熊本 · Day 5</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_0866.jpeg" alt="ヌッカバーガー" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="ヌッカバーガー" data-en="Nukka Burger">ヌッカバーガー</p>
+        <p class="food-area" data-ja="阿蘇 · Day 5" data-en="Aso · Day 5">阿蘇 · Day 5</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_0891.jpeg" alt="ゴボ天うどん" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="ゴボ天うどん" data-en="Burdock Tempura Udon">ゴボ天うどん</p>
+        <p class="food-area" data-ja="島原 · Day 6" data-en="Shimabara · Day 6">島原 · Day 6</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_1030.jpeg" alt="とんかつ" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="とんかつ" data-en="Tonkatsu">とんかつ</p>
+        <p class="food-area" data-ja="鹿児島・Day 9" data-en="Kagoshima · Day 9">鹿児島・Day 9</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_1036.jpeg" alt="桜島うどん" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="桜島うどん" data-en="Sakurajima Udon">桜島うどん</p>
+        <p class="food-area" data-ja="桜島 · Day 10" data-en="Sakurajima · Day 10">桜島 · Day 10</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_1056.jpeg" alt="大根唐揚げ" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="大根唐揚げ" data-en="Fried Daikon">大根唐揚げ</p>
+        <p class="food-area" data-ja="鹿児島 · Day 10" data-en="Kagoshima · Day 10">鹿児島 · Day 10</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_1057.jpeg" alt="さつま揚げ" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="さつま揚げ" data-en="Satsuma-age">さつま揚げ</p>
+        <p class="food-area" data-ja="鹿児島 · Day 10" data-en="Kagoshima · Day 10">鹿児島 · Day 10</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_1101.jpeg" alt="トビウオの唐揚げ" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="トビウオの唐揚げ" data-en="Fried Flying Fish">トビウオの唐揚げ</p>
+        <p class="food-area" data-ja="屋久島 · Day 11" data-en="Yakushima · Day 11">屋久島 · Day 11</p>
+      </div>
+    </div><div class="food-card">
+      <img class="food-img" src="images/food/IMG_1443.jpeg" alt="瓦そば" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="food-placeholder" style="display:none">🍽</div>
+      <div class="food-body">
+        <p class="food-name" data-ja="瓦そば" data-en="Kawara Soba">瓦そば</p>
+        <p class="food-area" data-ja="山口 · Day 16" data-en="Yamaguchi · Day 16">山口 · Day 16</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 雑感 ============ -->
+<section class="essay-section" id="essay">
+  <div class="sec-header">
+    <p class="sec-eyebrow">REFLECTIONS</p>
+    <h2 class="sec-title sec-title-light" data-ja="雑感" data-en="Notes">雑感</h2>
+    <div class="sec-rule"></div>
+  </div>
+  <div class="essay-body" style="text-align:center;padding:3rem 0;">
+    <p style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.3em;color:var(--gold);opacity:0.6">🚧 UNDER CONSTRUCTION 🚧</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+
+<!-- ============ SCRIPTS ============ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Map
+const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([32.5, 131.0], 6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap, © CARTO',
+  maxZoom: 13
+}).addTo(map);
+
+const dotIcon = (color, size=10) => L.divIcon({
+  className: '',
+  html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;border:2px solid rgba(245,240,232,0.8);box-shadow:0 0 8px ${color}88"></div>`,
+  iconSize: [size, size],
+  iconAnchor: [size/2, size/2]
+});
+
+// Color by region
+const C = { shikoku:'#c84b2f', kyushu:'#a8894a', yakushima:'#4a9e6b', chugoku:'#5b8fc8' };
+
+const spots = [
+  // 四国
+  { latlng:[34.50,134.90], label:'淡路島',         day:1,  date:'May 8',  color:C.shikoku },
+  { latlng:[34.27,133.77], label:'丸亀城',          day:2,  date:'May 9',  color:C.shikoku },
+  { latlng:[33.85,134.10], label:'剣山 1,955m',     day:2,  date:'May 9',  color:C.shikoku },
+  { latlng:[33.77,133.11], label:'石鎚山 1,982m',   day:3,  date:'May 10', color:C.shikoku },
+  // 九州
+  { latlng:[33.10,131.25], label:'九重山 1,791m',   day:4,  date:'May 11', color:C.kyushu },
+  { latlng:[32.82,131.37], label:'祖母山 1,756m',   day:5,  date:'May 12', color:C.kyushu },
+  { latlng:[32.88,131.08], label:'阿蘇 草千里ヶ浜', day:5,  date:'May 12', color:C.kyushu },
+  { latlng:[32.75,129.87], label:'長崎',            day:6,  date:'May 13', color:C.kyushu },
+  { latlng:[32.75,130.29], label:'普賢岳 1,359m',   day:7,  date:'May 14', color:C.kyushu },
+  { latlng:[31.92,130.86], label:'韓国岳 1,700m',   day:8,  date:'May 15', color:C.kyushu },
+  { latlng:[31.18,130.53], label:'開聞岳 924m',     day:9,  date:'May 16', color:C.kyushu },
+  { latlng:[31.58,130.66], label:'桜島',            day:10, date:'May 17', color:C.kyushu },
+  // 屋久島
+  { latlng:[30.36,130.55], label:'屋久島 — 宮之浦岳 1,936m', day:12, date:'May 19', color:C.yakushima },
+  { latlng:[30.45,130.53], label:'白谷雲水峡 / 縄文杉',       day:11, date:'May 18', color:C.yakushima },
+  // 中国
+  { latlng:[33.32,130.39], label:'吉野ヶ里遺跡',    day:16, date:'May 23', color:C.chugoku },
+  { latlng:[33.95,130.97], label:'関門海峡',        day:16, date:'May 23', color:C.chugoku },
+  { latlng:[34.30,132.32], label:'宮島 弥山 535m',  day:17, date:'May 24', color:C.chugoku },
+  { latlng:[34.39,132.45], label:'原爆ドーム',      day:17, date:'May 24', color:C.chugoku },
+  { latlng:[35.37,133.54], label:'伯耆大山 1,729m', day:18, date:'May 25', color:C.chugoku },
+  { latlng:[35.54,134.24], label:'鳥取砂丘',        day:18, date:'May 25', color:C.chugoku },
+];
+
+L.polyline(spots.map(s => s.latlng), {
+  color: '#c84b2f', weight: 1.5, opacity: 0.4, dashArray: '4 8'
+}).addTo(map);
+
+spots.forEach(s => {
+  L.marker(s.latlng, { icon: dotIcon(s.color) })
+    .addTo(map)
+    .bindPopup(`<b style="font-family:sans-serif;font-size:13px">${s.label}</b><br><span style="font-size:11px;color:#999">Day ${s.day} · ${s.date}</span>`);
+});
+
+// photos.json を読み込みスライダーを初期化
+fetch('photos.json')
+  .then(r => r.json())
+  .catch(() => ({}))
+  .then(photos => {
+    document.querySelectorAll('.entry-img-wrap[data-entry]').forEach(wrap => {
+      const keys  = wrap.dataset.entry.trim().split(/\s+/);
+      const list  = keys.flatMap(k => photos[k] || []);
+      const ph    = wrap.querySelector('.entry-placeholder');
+
+      if (list.length === 0) {
+        if (ph) ph.style.display = 'flex';
+        return;
+      }
+
+      // 画像を生成
+      if (ph) ph.style.display = 'none';
+      const img = document.createElement('img');
+      img.className = 'entry-img';
+      img.src = list[0];
+      img.alt = keys[keys.length - 1].split('/').pop();
+      img.style.transition = 'opacity 0.35s ease';
+      wrap.insertBefore(img, wrap.firstChild);
+
+      if (list.length < 2) return;
+
+      let idx = 0;
+
+      // ドット
+      const dotsEl = document.createElement('div');
+      dotsEl.className = 'slider-dots';
+      list.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', e => { e.stopPropagation(); go(i); });
+        dotsEl.appendChild(d);
+      });
+      wrap.appendChild(dotsEl);
+
+      // 矢印
+      ['prev','next'].forEach(dir => {
+        const btn = document.createElement('button');
+        btn.className = 'slider-btn ' + dir;
+        btn.innerHTML = dir === 'prev' ? '&#8249;' : '&#8250;';
+        btn.addEventListener('click', e => { e.stopPropagation(); go(dir === 'prev' ? idx - 1 : idx + 1); });
+        wrap.appendChild(btn);
+      });
+
+      function go(n) {
+        idx = (n + list.length) % list.length;
+        img.style.opacity = '0';
+        setTimeout(() => { img.src = list[idx]; img.style.opacity = '1'; }, 200);
+        dotsEl.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+
+      // 3秒自動切り替え（ホバー中は停止）
+      let timer = setInterval(() => go(idx + 1), 3000);
+      wrap.addEventListener('mouseenter', () => clearInterval(timer));
+      wrap.addEventListener('mouseleave', () => { timer = setInterval(() => go(idx + 1), 3000); });
+    });
+  });
+
+// Scroll animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.entry').forEach(el => observer.observe(el));
+
+// Active nav
+const sections = document.querySelectorAll('section[id]');
+const navBtns  = document.querySelectorAll('.tagbtn');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navBtns.forEach(b => b.classList.remove('active'));
+      const btn = document.querySelector(`.tagbtn[href="#${e.target.id}"]`);
+      if (btn) btn.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(s => io.observe(s));
+</script>
+
+<script>
+let currentLang = 'ja';
+function toggleLang() {
+  currentLang = currentLang === 'ja' ? 'en' : 'ja';
+  document.getElementById('lang-btn').textContent = currentLang === 'ja' ? 'EN' : 'JP';
+  document.querySelectorAll('[data-ja][data-en]').forEach(el => {
+    el.innerHTML = el.dataset[currentLang];
+  });
+  // Cover desc spans (contain HTML entities)
+  document.querySelectorAll('[data-ja]').forEach(el => {
+    const val = el.dataset[currentLang];
+    if (val !== undefined) el.innerHTML = val;
+  });
+}
+</script>
 </body>
 </html>
